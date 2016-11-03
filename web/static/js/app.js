@@ -25,7 +25,7 @@ class App {
 
     $input.off("keypress").on("keypress", e => {
       if (e.keyCode == 13) {
-        chan.push("new:msg", {user: $username.val(), body: $input.val()})
+        chan.push("new:msg", {user: $username.val(), msg: { text: $input.val() } })
         $input.val("")
       }
     })
@@ -44,8 +44,9 @@ class App {
   static sanitize(html){ return $("<div/>").text(html).html() }
 
   static messageTemplate(msg){
+    console.log(msg);
     let username = this.sanitize(msg.user || "anonymous")
-    let body     = this.sanitize(msg.body)
+    let body     = this.sanitize(msg.msg.text)
 
     return(`<p><a href='#'>[${username}]</a>&nbsp; ${body}</p>`)
   }

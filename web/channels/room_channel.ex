@@ -1,5 +1,6 @@
 defmodule PhoenixChat.RoomChannel do
   use Phoenix.Channel
+  alias PhoenixChat.{Repo, Message}
   require Logger
 
   def join("rooms:lobby", message, socket) do
@@ -25,8 +26,18 @@ defmodule PhoenixChat.RoomChannel do
     :ok
   end
 
-  def handle_in("new:msg", msg, socket) do
-    broadcast! socket, "new:msg", %{user: msg["user"], body: msg["body"]}
-    {:reply, {:ok, %{msg: msg["body"]}}, assign(socket, :user, msg["user"])}
+  def handle_in("new:msg", %{"user" => user, "msg" => msg_params}, socket) do
+    changeset = Message.changeset(%Message{}, msg_params)
+
+      case Repo.insert(changeset) do
+        {:ok, msg} ->
+          broadcast! socket, "new:msg", %{
+           user: user,
+           msg:  msg
+         }
+          {:noreply, socket}
+        {:error, changeset} ->
+          {:noreply, socket}
+      end
   end
 end

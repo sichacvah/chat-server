@@ -11,7 +11,7 @@ config :phoenix_chat,
 
 # Configures the endpoint
 config :phoenix_chat, PhoenixChat.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "192.168.0.103"],
   secret_key_base: "CufQ8wkfNoEbAjzcZv9S5+V5g+UR30xL9NktxfjBUepEPdDE7jTWjdimFU+cnq+h",
   render_errors: [view: PhoenixChat.ErrorView, accepts: ~w(html json)],
   pubsub: [name: PhoenixChat.PubSub,
