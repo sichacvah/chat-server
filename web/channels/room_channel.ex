@@ -28,12 +28,15 @@ defmodule PhoenixChat.RoomChannel do
 
   def handle_in("new:msg", %{"user" => user, "msg" => msg_params}, socket) do
     changeset = Message.changeset(%Message{}, msg_params)
-
       case Repo.insert(changeset) do
         {:ok, msg} ->
           broadcast! socket, "new:msg", %{
-           user: user,
-           msg:  msg
+            user: user,
+            msg: %{
+              _id: msg.id,
+              text: msg.text,
+              image: msg.image
+            }
          }
           {:noreply, socket}
         {:error, changeset} ->
